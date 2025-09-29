@@ -35,7 +35,7 @@ export const Home = () => {
 
     const savedAvatars = JSON.parse(localStorage.getItem("avatars") || "{}");
 
-    const contactAvgitatar = data.contacts.map(contact => {
+    const contactAvatar = data.contacts.map(contact => {
       if (!contact.id) return null;
       const avatar = contact.avatar || savedAvatars[contact.id] || null;
       if (avatar) savedAvatars[contact.id] = avatar;
@@ -72,7 +72,6 @@ export const Home = () => {
 
   return (
     <div style={{ maxHeight: "80vh", overflowY: "auto", padding: "20px" }}>
-      {/* Header con botón de crear contacto */}
       <div className="d-flex align-items-center mb-3">
   <h2 className="text-center flex-grow-1 m-0">Lista de Contactos</h2>
       </div>
