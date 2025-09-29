@@ -1,77 +1,8 @@
-import { useEffect } from "react";
-import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import { useNavigate, useLocation } from "react-router-dom";
-import { ListaContactos } from "../components/ListaContactos.jsx";
 
+export const ListaContactos = ()=>{
 
-export const Home = () => {
-  const { store, dispatch } = useGlobalReducer();
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const agendaName = "mi_agenda";
-  const apiUrl = `https://playground.4geeks.com/contact/agendas/${agendaName}/contacts`;
-
-  // Crear agenda si no existe
-  const AgendaExists = async () => {
-    try {
-      await fetch(`https://playground.4geeks.com/contact/agendas/${agendaName}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: agendaName })
-      });
-    } catch (error) {
-      console.error("No se pudo crear la agenda:", error);
-    }
-  };
-
-  // Obtener contactos
-  const getContacts = async () => {
-    await AgendaExists();
-
-    const response = await fetch(apiUrl);
-    if (!response.ok) return;
-    const data = await response.json();
-
-    const savedAvatars = JSON.parse(localStorage.getItem("avatars") || "{}");
-
-    const contactAvgitatar = data.contacts.map(contact => {
-      if (!contact.id) return null;
-      const avatar = contact.avatar || savedAvatars[contact.id] || null;
-      if (avatar) savedAvatars[contact.id] = avatar;
-      return { ...contact, avatar };
-    }).filter(Boolean);
-
-    localStorage.setItem("avatars", JSON.stringify(savedAvatars));
-    dispatch({ type: "setContacts", payload: contactAvatar });
-  };
-
-  useEffect(() => {
-    getContacts();
-    if (location.state?.reload) {
-      window.history.replaceState({}, document.title);
-    }
-  }, [location.state]);
-
-  const handleEdit = (contact) => {
-    if (!contact.id) return alert("No se puede editar un contacto sin ID");
-    navigate("/demo", { state: { contact, agendaName } });
-  };
-
-  const handleDelete = async (id) => {
-    const response = await fetch(`${apiUrl}/${id}`, { method: "DELETE" });
-    if (response.ok) {
-      const updatedContacts = store.contacts.filter(c => c.id !== id);
-      dispatch({ type: "setContacts", payload: updatedContacts });
-
-      const savedAvatars = JSON.parse(localStorage.getItem("avatars") || "{}");
-      delete savedAvatars[id];
-      localStorage.setItem("avatars", JSON.stringify(savedAvatars));
-    }
-  };
-
-  return (
-    <div style={{ maxHeight: "80vh", overflowY: "auto", padding: "20px" }}>
+    return(
+        <div style={{ maxHeight: "80vh", overflowY: "auto", padding: "20px" }}>
       {/* Header con botón de crear contacto */}
       <div className="d-flex align-items-center mb-3">
   <h2 className="text-center flex-grow-1 m-0">Lista de Contactos</h2>
@@ -132,4 +63,5 @@ export const Home = () => {
       )}
     </div>
   );
-};
+    
+}
